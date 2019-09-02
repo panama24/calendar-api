@@ -4,7 +4,7 @@ const getEvents = (req, res, db) => {
       if (e.length) {
         res.json(e);
       } else {
-        res.json({ dataExists: 'false' });
+        res.json([]);
       }
     })
     .catch(err => res.status(400).json({ dbError: 'db error' }));
@@ -16,12 +16,14 @@ const postEvents = (req, res, db) => {
     endDateTime: end_date_time,
     startDateTime: start_date_time,
     title,
+    type,
   } = req.body;
   db('events').insert({
     description,
     end_date_time,
     start_date_time,
     title,
+    type,
   })
     .returning('*')
     .then(e => {
@@ -37,6 +39,7 @@ const putEvents = (req, res, db) => {
     end_date_time,
     start_date_time,
     title,
+    type,
   } = req.body;
   db('events')
     .where({ id })
@@ -45,6 +48,7 @@ const putEvents = (req, res, db) => {
       end_date_time,
       start_date_time,
       title,
+      type,
     })
     .returning('*')
     .then(e => {
