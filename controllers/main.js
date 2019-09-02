@@ -1,4 +1,4 @@
-const getTableData = (res, rq, db) => {
+const getEvents = (req, res, db) => {
   db.select('*').from('events')
     .then(e => {
       if (e.length) {
@@ -10,10 +10,19 @@ const getTableData = (res, rq, db) => {
     .catch(err => res.status(400).json({ dbError: 'db error' }));
 };
 
-const postTableData = (req, res, db) => {
-  const { startTime } = req.body;
-  const createdAt = new Date();
-  db('events').insert({ createdAt, startTime })
+const postEvents = (req, res, db) => {
+  const {
+    description,
+    endDateTime: end_date_time,
+    startDateTime: start_date_time,
+    title,
+  } = req.body;
+  db('events').insert({
+    description,
+    end_date_time,
+    start_date_time,
+    title,
+  })
     .returning('*')
     .then(e => {
       res.json(e);
@@ -21,9 +30,22 @@ const postTableData = (req, res, db) => {
     .catch(err => res.status(400).json({ dbError: 'db error' }));
 };
 
-const putTableData = (req, res, db) => {
-  const { id, startTime } = req.body;
-  db('events').where({ id }).update({ startTime })
+const putEvents = (req, res, db) => {
+  const {
+    id,
+    description,
+    end_date_time,
+    start_date_time,
+    title,
+  } = req.body;
+  db('events')
+    .where({ id })
+    .update({
+      description,
+      end_date_time,
+      start_date_time,
+      title,
+    })
     .returning('*')
     .then(e => {
       res.json(e);
@@ -31,18 +53,18 @@ const putTableData = (req, res, db) => {
     .catch(err => res.status(400).json({ dbError: 'db error' }));
 };
 
-const deleteTableData = (req, res, db) => {
+const deleteEvents = (req, res, db) => {
   const { id } = req.body;
   db('events').where({ id }).del()
     .then(() => {
       res.json({ delete: 'true' });
     })
-    .catch(err => req.status(400).json({ dbError: 'db error' }));
+    .catch(err => res.status(400).json({ dbError: 'db error' }));
 };
 
 module.exports = {
-  getTableData,
-  postTableData,
-  putTableData,
-  deleteTableData,
+  getEvents,
+  postEvents,
+  putEvents,
+  deleteEvents,
 };

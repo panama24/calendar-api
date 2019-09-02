@@ -25,7 +25,7 @@ var db = require('knex')({
     host: '127.0.0.1',
     user: '',
     password: '',
-    database: 'calendar-api'
+    database: 'calendar_api'
   },
 });
 
@@ -37,7 +37,7 @@ const main = require('./controllers/main');
 const app = express();
 
 // App middleware
-const whitelist = ['http://localhost:3001'];
+const whitelist = ['http://localhost:3000'];
 const corsOptions = {
   origin: function (origin, callback) {
     if (whitelist.indexOf(origin) !== -1 || !origin) {
@@ -55,12 +55,12 @@ app.use(morgan('combined')); // use tiny or combined
 
 // App routes - Auth
 app.get('/', (req, res) => res.send('hello world!'));
-app.get('/crud', (req, res) => main.getTableData(req, res, db));
-app.post('/crud', (req, res) => main.postTableData(req, res, db));
-app.put('/crud', (req, res) => main.putTableData(req, res, db));
-app.delete('/crud', (req, res) => main.deleteTableData(req, res, db));
+app.get('/events', (req, res) => main.getEvents(req, res, db));
+app.post('/events', (req, res) => main.postEvents(req, res, db));
+app.put('/events', (req, res) => main.putEvents(req, res, db));
+app.delete('/events', (req, res) => main.deleteEvents(req, res, db));
 
 // App server connection
-app.listen(process.env.PORT || 3000, () => {
-  console.log(`app is running on port ${process.env.PORT || 3000}`);
+app.listen(process.env.PORT || 3001, () => {
+  console.log(`app is running on port ${process.env.PORT || 3001}`);
 });
